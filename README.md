@@ -1,44 +1,49 @@
-Main Kere Hore
+# Main Kere Hore
 
-Main Kere Hore adalah aplikasi mobile berbasis Flutter yang dirancang untuk membantu pengguna menemukan penawaran diskon game terbaik dari berbagai platform distribusi digital resmi seperti Steam, Epic Games, dan GOG. Informasi diperbarui secara waktu nyata sehingga pengguna bisa memantau perubahan harga dengan cepat.
+**Main Kere Hore** adalah aplikasi mobile berbasis **Flutter** yang membantu pengguna menemukan penawaran diskon game terbaik dari platform resmi seperti **Steam**, **Epic Games**, dan **GOG**. Informasi diperbarui secara **real time** untuk memudahkan pemantauan perubahan harga.
 
-Aplikasi ini menyediakan fitur penyaringan data yang lengkap serta sinkronisasi wishlist, sehingga pengguna dapat mengikuti penurunan harga dan penawaran game gratis dengan lebih efisien.
+Aplikasi ini menyediakan **fitur filter lengkap** dan **sinkronisasi wishlist**, sehingga pengguna bisa mengikuti penurunan harga serta penawaran game gratis dengan lebih efisien.
 
-Fitur Utama
+---
 
-Pencarian Penawaran (Discover Deals)
-Pengguna dapat menjelajahi ribuan penawaran game yang tersedia melalui API CheapShark.
+## Fitur Utama
 
-Filter Lanjutan
-Tersedia penyaringan berdasarkan judul, genre seperti aksi, RPG, atau strategi, serta persentase diskon yang diinginkan.
+### **Pencarian Penawaran (Discover Deals)**
+Menelusuri ribuan penawaran game melalui **API CheapShark**.
 
-Mode Game Gratis
-Fitur khusus yang menampilkan daftar game yang sedang digratiskan.
+### **Filter Lanjutan**
+Penyaringan berdasarkan:
+- Judul
+- Genre (Action, RPG, Strategy, dll.)
+- Persentase diskon
 
-Sinkronisasi Wishlist
-Pengguna dapat menyimpan game favorit ke dalam basis data Supabase. Data ini akan tersinkronisasi otomatis di semua perangkat.
+### **Mode Game Gratis**
+Menampilkan daftar game yang sedang digratiskan.
 
-Tema Tampilan
-Aplikasi mendukung Dark Mode yang dioptimalkan untuk layar AMOLED dan Light Mode untuk penggunaan di berbagai kondisi.
+### **Sinkronisasi Wishlist**
+Menyimpan game favorit ke **Supabase**, dengan sinkronisasi otomatis ke semua perangkat.
 
-Fleksibilitas Tampilan
-Pengguna dapat memilih antara List View untuk informasi yang lebih lengkap atau Grid View untuk tampilan yang lebih ringkas.
+### **Tema Tampilan**
+- Dark Mode (optimal untuk AMOLED)
+- Light Mode
 
-Autentikasi Pengguna
-Proses daftar dan masuk menggunakan verifikasi email melalui Supabase Auth agar tetap aman.
+### **Fleksibilitas Tampilan**
+- **List View** untuk detail lengkap
+- **Grid View** untuk tampilan lebih ringkas
 
-Teknologi yang Digunakan
+### **Autentikasi Pengguna**
+Login dan daftar menggunakan verifikasi email melalui **Supabase Auth**.
 
-Frontend: Flutter (Dart)
+---
 
-Backend dan Basis Data: Supabase (PostgreSQL dan Auth)
+## Teknologi yang Digunakan
 
-Integrasi API:
+- **Frontend:** Flutter (Dart)
+- **Backend & Database:** Supabase (PostgreSQL, Auth)
+- **Integrasi API:**
+  - CheapShark API (diskon)
+  - Steam Store API (validasi genre)
+- **Manajemen State:** `setState`, `ValueNotifier`
+- **Konektivitas:** `http` package
 
-CheapShark API (data diskon)
-
-Steam Store API (validasi genre)
-
-Manajemen State: setState dan ValueNotifier
-
-Konektivitas: http package
+---
