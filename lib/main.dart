@@ -12,6 +12,28 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 // Global Theme Notifier
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.dark);
 
+// --- HELPER FORMAT RUPIAH ---
+String formatRupiah(dynamic usdPrice) {
+  // 1. Asumsi Kurs USD ke IDR
+  const double exchangeRate = 16000; 
+  
+  // 2. Parsing data
+  double priceInUsd = double.tryParse(usdPrice.toString()) ?? 0.0;
+  
+  // 3. Cek jika Gratis
+  if (priceInUsd <= 0.0) return 'GRATIS';
+
+  // 4. Hitung Rupiah
+  int priceInIdr = (priceInUsd * exchangeRate).round();
+
+  // 5. Format Ribuan dengan Titik (Regex manual agar tidak perlu plugin intl)
+  String idrString = priceInIdr.toString();
+  RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+  String result = idrString.replaceAllMapped(reg, (Match m) => '${m[1]}.');
+
+  return 'Rp $result';
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
@@ -246,7 +268,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Mengganti Icon dengan Icon Uang Kertas (Money)
                 Icon(Icons.money, size: 80, color: isDark ? Colors.white : Colors.black),
                 const SizedBox(height: 16),
                 Text(
@@ -466,17 +487,6 @@ class _DealsPageState extends State<DealsPage> {
     // 2. KIRIM REQUEST KE SERVER
     try {
       if (isAlreadySaved) {
-        // Hapus
-        // Note: Kita butuh ID aslinya. Jika baru saja ditambah dan belum sync stream, 
-        // mungkin IDnya masih -1. Tapi untuk kasus normal ini bekerja.
-        // Jika stream listener cepat, ID asli sudah ada.
-        
-        // Cari ID database dari list stream atau query ulang jika perlu, 
-        // tapi di sini kita asumsi user tidak klik secepat kilat (add -> remove dalam 0.1ms).
-        // Kalau ID hilang karena remove optimistic di atas, kita harusnya simpan dulu.
-        // PERBAIKAN: Ambil ID dari snapshot Stream/Cache sebelum dihapus dari map lokal UI.
-        // Namun karena kita sudah hapus di setState atas, kita query delete berdasarkan deal_id & user_id (lebih aman)
-        
         await Supabase.instance.client
             .from('saved_deals')
             .delete()
@@ -485,7 +495,6 @@ class _DealsPageState extends State<DealsPage> {
             
         if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Dihapus dari wishlist'), duration: Duration(seconds: 1)));
       } else {
-        // Simpan
         await Supabase.instance.client.from('saved_deals').insert({
           'user_id': user.id,
           'game_title': deal['title'],
@@ -501,7 +510,7 @@ class _DealsPageState extends State<DealsPage> {
       if (mounted) {
         setState(() {
           if (isAlreadySaved) {
-            _savedStatus[dealID] = 123; // Restore (ID dummy gpp, nanti stream refresh)
+            _savedStatus[dealID] = 123; 
           } else {
             _savedStatus.remove(dealID);
           }
@@ -787,7 +796,7 @@ class _DealsPageState extends State<DealsPage> {
                       ? GridView.builder(
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            childAspectRatio: 0.75,
+                            childAspectRatio: 0.70, 
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
                           ),
@@ -801,8 +810,9 @@ class _DealsPageState extends State<DealsPage> {
                             return GameCard(
                               title: deal['title'],
                               thumb: deal['thumb'],
-                              normalPrice: '\$${deal['normalPrice']}',
-                              salePrice: deal['salePrice'] == '0.00' ? 'FREE' : '\$${deal['salePrice']}',
+                              // UBAH KE RUPIAH
+                              normalPrice: formatRupiah(deal['normalPrice']),
+                              salePrice: formatRupiah(deal['salePrice']),
                               savings: deal['savings'],
                               storeName: storeNames[deal['storeID']] ?? 'Store',
                               onTapBtn: () => _toggleWishlist(deal),
@@ -810,6 +820,7 @@ class _DealsPageState extends State<DealsPage> {
                               isSaved: isSaved, 
                               onWeb: () => launchUrl(Uri.parse('https://www.cheapshark.com/redirect?dealID=$dealID')),
                               isGrid: true,
+                              lastChange: int.tryParse(deal['lastChange'].toString()) ?? 0,
                             );
                           },
                         )
@@ -826,8 +837,9 @@ class _DealsPageState extends State<DealsPage> {
                               child: GameCard(
                                 title: deal['title'],
                                 thumb: deal['thumb'],
-                                normalPrice: '\$${deal['normalPrice']}',
-                                salePrice: deal['salePrice'] == '0.00' ? 'FREE' : '\$${deal['salePrice']}',
+                                // UBAH KE RUPIAH
+                                normalPrice: formatRupiah(deal['normalPrice']),
+                                salePrice: formatRupiah(deal['salePrice']),
                                 savings: deal['savings'],
                                 storeName: storeNames[deal['storeID']] ?? 'Store',
                                 onTapBtn: () => _toggleWishlist(deal),
@@ -835,6 +847,7 @@ class _DealsPageState extends State<DealsPage> {
                                 isSaved: isSaved,
                                 onWeb: () => launchUrl(Uri.parse('https://www.cheapshark.com/redirect?dealID=$dealID')),
                                 isGrid: false,
+                                lastChange: int.tryParse(deal['lastChange'].toString()) ?? 0,
                               ),
                             );
                           },
@@ -846,7 +859,7 @@ class _DealsPageState extends State<DealsPage> {
   }
 }
 
-// --- WISHLIST PAGE (Diubah jadi StatefulWidget agar bisa hapus instan) ---
+// --- WISHLIST PAGE ---
 class WishlistPage extends StatefulWidget {
   const WishlistPage({super.key});
 
@@ -875,7 +888,6 @@ class _WishlistPageState extends State<WishlistPage> {
   void _loadWishlist() {
     final user = Supabase.instance.client.auth.currentUser;
     if (user != null) {
-      // Stream agar tetap update jika ditambah dari halaman discover
       _subscription = Supabase.instance.client
           .from('saved_deals')
           .stream(primaryKey: ['id'])
@@ -920,20 +932,16 @@ class _WishlistPageState extends State<WishlistPage> {
 
     if (confirm != true) return;
 
-    // 2. Simpan backup data jika gagal
     final backupItem = _wishlist[index];
 
-    // 3. HAPUS DARI UI LANGSUNG (Optimistic)
     setState(() {
       _wishlist.removeAt(index);
     });
 
-    // 4. Hapus dari Database
     try {
       await Supabase.instance.client.from('saved_deals').delete().eq('id', id);
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Dihapus'), duration: Duration(milliseconds: 500)));
     } catch (e) {
-      // Jika gagal, kembalikan ke UI
       if (mounted) {
         setState(() {
           _wishlist.insert(index, backupItem);
@@ -976,7 +984,8 @@ class _WishlistPageState extends State<WishlistPage> {
                   title: item['game_title'],
                   thumb: item['thumb_url'],
                   normalPrice: '', 
-                  salePrice: item['sale_price'] == '0.00' ? 'FREE' : '\$${item['sale_price']}',
+                  // UBAH KE RUPIAH
+                  salePrice: formatRupiah(item['sale_price']),
                   savings: '0',
                   storeName: 'Saved',
                   btnIcon: Icons.delete_outline,
@@ -985,6 +994,7 @@ class _WishlistPageState extends State<WishlistPage> {
                   isWishlist: true,
                   isSaved: true,
                   isGrid: false,
+                  lastChange: 0, 
                 ),
               );
             },
@@ -1001,7 +1011,8 @@ class GameCard extends StatelessWidget {
   final IconData btnIcon;
   final bool isWishlist;
   final bool isGrid;
-  final bool isSaved; // Parameter baru untuk warna hati
+  final bool isSaved;
+  final int? lastChange;
 
   const GameCard({
     super.key,
@@ -1016,12 +1027,41 @@ class GameCard extends StatelessWidget {
     required this.btnIcon,
     this.isWishlist = false,
     this.isGrid = false,
-    this.isSaved = false, // Default false
+    this.isSaved = false,
+    this.lastChange,
   });
+
+  String _formatTimeInfo() {
+    if (lastChange == null || lastChange == 0) return '';
+
+    final date = DateTime.fromMillisecondsSinceEpoch(lastChange! * 1000);
+    final now = DateTime.now();
+    final isFuture = date.isAfter(now);
+    final diff = isFuture ? date.difference(now) : now.difference(date);
+
+    String timeString;
+    if (diff.inDays > 0) {
+      timeString = '${diff.inDays} hari';
+    } else if (diff.inHours > 0) {
+      timeString = '${diff.inHours} jam';
+    } else {
+      timeString = '${diff.inMinutes} menit';
+    }
+
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final dateStr = '${twoDigits(date.day)}/${twoDigits(date.month)}/${date.year} ${twoDigits(date.hour)}:${twoDigits(date.minute)}';
+
+    if (isFuture) {
+      return 'Berakhir dlm $timeString ($dateStr)';
+    } else {
+      return 'Update $timeString lalu ($dateStr)';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final timeInfo = _formatTimeInfo();
 
     Widget contentSection = Padding(
       padding: EdgeInsets.all(isGrid ? 10 : 16),
@@ -1046,12 +1086,30 @@ class GameCard extends StatelessWidget {
                     Wrap( 
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        if(normalPrice.isNotEmpty)
+                        if(normalPrice.isNotEmpty && normalPrice != 'GRATIS')
                           Text(normalPrice, style: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.grey, fontSize: 10)),
-                        if(normalPrice.isNotEmpty) const SizedBox(width: 4),
+                        if(normalPrice.isNotEmpty && normalPrice != 'GRATIS') const SizedBox(width: 4),
                         Text(salePrice, style: TextStyle(color: isDark ? Colors.white : Colors.black, fontWeight: FontWeight.bold, fontSize: isGrid ? 14 : 18)),
                       ],
                     ),
+                    if (timeInfo.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Row(
+                          children: [
+                            Icon(Icons.access_time, size: 10, color: isDark ? Colors.grey : Colors.grey[700]),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                timeInfo,
+                                style: TextStyle(fontSize: 9, color: isDark ? Colors.grey : Colors.grey[700], fontStyle: FontStyle.italic),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -1070,13 +1128,13 @@ class GameCard extends StatelessWidget {
                     color: isWishlist 
                         ? Colors.pink.withOpacity(0.1) 
                         : (isSaved 
-                            ? Colors.pink.withOpacity(0.1) // Merah muda jika tersimpan
+                            ? Colors.pink.withOpacity(0.1) 
                             : (isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05))),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     btnIcon, 
-                    color: isWishlist || isSaved ? Colors.pink : Colors.grey, // Ikon Pink jika tersimpan
+                    color: isWishlist || isSaved ? Colors.pink : Colors.grey, 
                     size: isGrid ? 16 : 20
                   ),
                 ),
