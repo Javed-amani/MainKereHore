@@ -1,6 +1,6 @@
 # Main Kere Hore
 
-**Main Kere Hore** adalah aplikasi mobile berbasis **Flutter** yang membantu pengguna menemukan penawaran diskon game terbaik dari platform resmi seperti **Steam**, **Epic Games**, dan **GOG**. Informasi diperbarui secara **real time** untuk memudahkan pemantauan perubahan harga.
+**Main Kere Hore** merupakan aplikasi mobile berbasis **Flutter** yang membantu pengguna menemukan penawaran diskon game terbaik dari platform resmi seperti **Steam**, **Epic Games**, dan **GOG**. Informasi diperbarui secara **real time** untuk memudahkan pemantauan perubahan harga.
 
 Aplikasi ini menyediakan **fitur filter lengkap** dan **sinkronisasi wishlist**, sehingga pengguna bisa mengikuti penurunan harga serta penawaran game gratis dengan lebih efisien.
 
@@ -9,7 +9,7 @@ Aplikasi ini menyediakan **fitur filter lengkap** dan **sinkronisasi wishlist**,
 ## Fitur Utama
 
 ### **Pencarian Penawaran (Discover Deals)**
-Menelusuri ribuan penawaran game melalui **API CheapShark**.
+Menelusuri penawaran game melalui **API CheapShark**.
 
 ### **Filter Lanjutan**
 Penyaringan berdasarkan:
@@ -47,3 +47,25 @@ Login dan daftar menggunakan verifikasi email melalui **Supabase Auth**.
 - **Konektivitas:** `http` package
 
 ---
+
+## Tampilan Aplikasi
+
+Berikut beberapa tampilan utama dari aplikasi **Main Kere Hore**:
+
+### Login
+![Login](lib/images/login.png)
+
+### Register
+![Register](lib/images/register.png)
+
+### Pencarian Game
+![Search](lib/images/search.png)
+
+### Wishlist
+![Wishlist](lib/images/wishlist.png)
+
+### List View
+![List View](lib/images/listview.png)
+
+### Grid View
+![Grid View](lib/images/gridview.png)

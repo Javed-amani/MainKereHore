@@ -281,7 +281,7 @@ class _DealsScreenState extends State<DealsScreen> {
                     ? GridView.builder(
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.70, 
+                          childAspectRatio: 0.65, 
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
                         ),

@@ -38,13 +38,17 @@ class GameCard extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      deal.title, 
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: isGrid ? 13 : 16),
-                      maxLines: isGrid ? 2 : 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+        // Judul Game
+        Flexible( // Tambahkan Flexible agar teks menyesuaikan ruang
+          child: Text(
+            deal.title,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: isGrid ? 13 : 16),
+            maxLines: isGrid ? 2 : 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
                     const SizedBox(height: 4),
                     Wrap( 
                       crossAxisAlignment: WrapCrossAlignment.center,
