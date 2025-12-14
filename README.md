@@ -3,6 +3,7 @@
 **Main Kere Hore** merupakan aplikasi mobile berbasis **Flutter** yang membantu pengguna menemukan penawaran diskon game terbaik dari platform resmi seperti **Steam**, **Epic Games**, dan **GOG**. Informasi diperbarui secara **real time** untuk memudahkan pemantauan perubahan harga.
 
 Aplikasi ini menyediakan **fitur filter lengkap** dan **sinkronisasi wishlist**, sehingga pengguna bisa mengikuti penurunan harga serta penawaran game gratis dengan lebih efisien.
+Aplikasi dapat didownload melalui section "release* pada repo ini
 
 ---
 
