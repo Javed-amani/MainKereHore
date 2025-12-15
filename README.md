@@ -1,6 +1,6 @@
 # Main Kere Hore
 
-**Main Kere Hore** merupakan aplikasi mobile berbasis **Flutter** yang membantu pengguna menemukan penawaran diskon game terbaik dari platform resmi seperti **Steam**, **Epic Games**, dan **GOG**. Informasi diperbarui secara **real time** untuk memudahkan pemantauan perubahan harga.
+**Main Kere Hore** merupakan aplikasi mobile berbasis **Flutter** yang membantu pengguna menemukan penawaran diskon game terbaik dari platform resmi seperti **Steam**, **Epic Games**, dan **GOG**. [...]
 
 Aplikasi ini menyediakan **fitur filter lengkap** dan **sinkronisasi wishlist**, sehingga pengguna bisa mengikuti penurunan harga serta penawaran game gratis dengan lebih efisien.
 Aplikasi dapat didownload melalui section "release* pada repo ini
@@ -46,6 +46,23 @@ Login dan daftar menggunakan verifikasi email melalui **Supabase Auth**.
   - Steam Store API (validasi genre)
 - **Manajemen State:** `setState`, `ValueNotifier`
 - **Konektivitas:** `http` package
+
+---
+
+## Struktur Folder
+
+Berikut struktur folder utama pada proyek ini dan penjelasan singkat tiap bagian:
+
+- android/ - Proyek Android yang dihasilkan oleh Flutter (konfigurasi native Android).
+- ios/ - Proyek iOS yang dihasilkan oleh Flutter (konfigurasi native iOS, Assets.xcassets, dll.).
+- lib/ - Kode sumber Flutter (Dart). Di sinilah UI, logika aplikasi, dan integrasi API berada.
+  - lib/images/ - Asset gambar yang digunakan di README dan tampilan aplikasi.
+  - lib/screens/ atau lib/pages/ - (jika ada) Berisi halaman layar seperti login, register, search, wishlist.
+  - lib/widgets/ - (jika ada) Komponen UI yang dapat digunakan ulang.
+- assets/ atau resources/ - (jika ada) Asset tambahan seperti font, icon, atau file JSON.
+- test/ - Unit & widget tests untuk aplikasi Flutter.
+- pubspec.yaml - File konfigurasi Flutter yang mendefinisikan dependensi, asset, dan metadata aplikasi.
+- ios/Runner/Assets.xcassets/ - Tempat asset iOS termasuk gambar launch screen.
 
 ---
 
